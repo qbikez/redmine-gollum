@@ -11,7 +11,6 @@ class GollumController < ApplicationController
 
   def show
     @editable = true
-
     show_page(params[:id])
   end
 
@@ -26,6 +25,7 @@ class GollumController < ApplicationController
     @page = @wiki.page(@name)
     @user = User.current
 
+    params[:page][:message] = "gollum"
     commit = { :message => params[:page][:message], :name => @user.name, :email => @user.mail }
 
     if @page
@@ -48,6 +48,12 @@ class GollumController < ApplicationController
       @page_name = page.name
       @page_title = page.title
       @page_content = page.formatted_data.html_safe
+      @page_modified = page.version.authored_date
+      @page_author = page.version.author.name
+      @page_header = page.header ? page.header.formatted_data.html_safe : ""
+      @page_footer = page.footer ? page.footer.formatted_data.html_safe : ""
+    elsif gollum_file = @wiki.file(name)
+        send_data gollum_file.raw_data, :type => gollum_file.mime_type
     else
       redirect_to :action => :edit, :id => name
     end
@@ -66,7 +72,7 @@ class GollumController < ApplicationController
     git_path = project_repository_path
 
     unless File.directory? git_path
-      Grit::Repo.init_bare(git_path)
+      Rugged::Repository.init_at(git_path, :bare)
     end
 
     wiki_dir = @project.gollum_wiki.directory

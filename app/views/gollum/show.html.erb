@@ -10,5 +10,8 @@
 </div>
 <div class="wiki wiki-page">
 <h1><%= @page_title %></h1>
+<%= @page_header %>
 <%= @page_content %>
+<%= @page_footer %>
+<em>Last modified: <%= format_time(@page_modified) %> by <%= @page_author %></em>
 </div> 

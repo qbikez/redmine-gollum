@@ -1,8 +1,8 @@
 require 'redmine'
 
 Rails.configuration.to_prepare do
-  require 'grit'
-  require 'gollum'
+  require 'rugged'
+  require 'gollum-lib'
   require_dependency 'gollum_project_model_patch'
   require_dependency 'gollum_projects_helper_patch'
   require_dependency 'gollum_projects_controller_patch'
@@ -19,8 +19,8 @@ Redmine::Plugin.register :redmine_gollum do
   description 'A gollum plugin for redmine'
 
   # use git to get version name
-  repo = Grit::Repo.new("#{Rails.root}/plugins/redmine_gollum/.git")
-  version repo.recent_tag_name('HEAD', :tags=>true)
+  repo = Rugged::Repository.new("#{Rails.root}/plugins/redmine_gollum/.git")
+  version 'HEAD'
 
   url 'https://github.com/gugod/redmine-gollum/'
   author_url 'http://gugod.org'
