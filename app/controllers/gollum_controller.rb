@@ -17,14 +17,14 @@ class GollumController < ApplicationController
   def edit
     @id = params[:id]
     @name, @dir = split_id @id
-    @page = @wiki.paged(@name, @dir)
+    @page = page_by_name_dir(@name, @dir)
     @content = @page ? @page.text_data : ""
   end
 
   def update
     id = params[:id]
     name, dir = split_id id
-    page = @wiki.paged(name, dir)
+    page = page_by_name_dir(name, dir)
     user = User.current
 
     params[:page][:message] = "gollum"
@@ -45,7 +45,22 @@ class GollumController < ApplicationController
     return @project.gollum_wiki.git_path
   end
 
-  def split_id(id)
+  def page_by_name_dir(name, dir)
+    page_dir = nil
+    if @wiki.page_file_dir && dir
+      page_dir = File.join @wiki.page_file_dir, dir
+    elsif @wiki.page_file_dir
+      page_dir = @wiki.page_file_dir
+    elsif dir
+      page_dir = dir
+    end
+    page = @wiki.paged name, page_dir
+  end
+
+  def split_id id
+    if @wiki.page_file_dir
+      id = id.gsub /^#{@wiki.page_file_dir}\//, ""
+    end
     if id.include? "/"
       _empty, dir, name = id.split /^(.*)\/(.*)$/ 
     else
@@ -58,7 +73,7 @@ class GollumController < ApplicationController
   def show_page(id)
     name, dir = split_id id
 
-    if page = @wiki.paged(name, dir)
+    if page = page_by_name_dir(name, dir)
       @page_id = id
       @page_name = page.name
       @page_title = page.title
@@ -67,7 +82,7 @@ class GollumController < ApplicationController
       @page_author = page.version.author.name
       @page_header = page.header ? page.header.formatted_data.html_safe : ""
       @page_footer = page.footer ? page.footer.formatted_data.html_safe : ""
-    elsif gollum_file = @wiki.file(name)
+    elsif gollum_file = @wiki.file(id)
         send_data gollum_file.raw_data, :type => gollum_file.mime_type
     else
       redirect_to :action => :edit, :id => id
