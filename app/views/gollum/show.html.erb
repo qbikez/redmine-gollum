@@ -2,7 +2,7 @@
 <% if @editable %>
   <%= link_to_if_authorized(
         l(:button_edit),
-        {:action => 'edit', :id => @page_name},
+        {:action => 'edit', :id => @page_id},
         :class => 'icon icon-edit',
         :accesskey => accesskey(:edit))
   %>
