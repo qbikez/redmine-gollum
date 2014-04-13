@@ -22,21 +22,21 @@ class GollumController < ApplicationController
   end
 
   def update
-    @id = params[:id]
-    @name, @dir = split_id @id
-    @page = @wiki.paged(@name, @dir)
-    @user = User.current
+    id = params[:id]
+    name, dir = split_id id
+    page = @wiki.paged(name, dir)
+    user = User.current
 
     params[:page][:message] = "gollum"
-    commit = { :message => params[:page][:message], :name => @user.name, :email => @user.mail }
+    commit = { :message => params[:page][:message], :name => user.name, :email => user.mail }
 
-    if @page
-      @wiki.update_page(@page, @page.name, @page.format, params[:page][:raw_data], commit)
+    if page
+      @wiki.update_page(page, page.name, page.format, params[:page][:raw_data], commit)
     else
-      @wiki.write_page(@name, @project.gollum_wiki.markup_language.to_sym, params[:page][:raw_data], commit, @dir)
+      @wiki.write_page(name, @project.gollum_wiki.markup_language.to_sym, params[:page][:raw_data], commit, dir)
     end
 
-    redirect_to :action => :show, :id => @name
+    redirect_to :action => :show, :id => id
   end
 
   private
