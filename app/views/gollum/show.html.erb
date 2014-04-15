@@ -8,6 +8,7 @@
   %>
 <% end %>
 </div>
+
 <div class="wiki wiki-page">
 <h1><%= @page_title %></h1>
 <%= @page_header %>
@@ -15,3 +16,7 @@
 <%= @page_footer %>
 <em>Last modified: <%= format_time(@page_modified) %> by <%= @page_author %></em>
 </div> 
+
+<% content_for :sidebar do %>
+  <%= @page_sidebar %>
+<% end %>

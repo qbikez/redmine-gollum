@@ -1,4 +1,20 @@
-<%= form_for :page, :url => project_gollum_path(:id => @id), :html => { :method => "put" } do |f| -%>
-<%= f.text_area :raw_data, :class => "wiki-edit", :cols => 100, :row => 25 %>
-<p><%= f.submit(l(:button_save)) %></p>
+<h2><%= h @name %></h2>
+
+<%= form_for :page,
+  :url => {:action => 'update', :id => @id},
+  :html => {:method => :put, :id => 'gollum_form' } do |f| %>
+
+<div class="box tabular">
+<%= text_area_tag 'page[raw_data]', @text, :cols => 100, :rows => 25,
+  :class => 'wiki-edit', :accesskey => accesskey(:edit) %>
+<p><label><%= l(:field_comments) %></label><%= text_field_tag 'page[message]', '', :size => 120 %></p>
+</div>
+
+<p><%= submit_tag l(:button_save) %>
+<%= preview_link({:controller => 'gollum', :action => 'preview', :project_id => @project, :id => @id }, 'gollum_form') %></p>
+<%= wikitoolbar_for 'page_raw_data' %>
 <% end %>
+
+<div id="preview" class="wiki"></div> 
+
+<% html_title @name %>

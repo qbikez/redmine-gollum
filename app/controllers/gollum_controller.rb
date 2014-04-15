@@ -18,7 +18,7 @@ class GollumController < ApplicationController
     @id = params[:id]
     @name, @dir = split_id @id
     @page = page_by_name_dir(@name, @dir)
-    @content = @page ? @page.text_data : ""
+    @text = @page ? @page.text_data : ""
   end
 
   def update
@@ -27,7 +27,7 @@ class GollumController < ApplicationController
     page = page_by_name_dir(name, dir)
     user = User.current
 
-    params[:page][:message] = "gollum"
+    params[:page][:message] = params[:page][:message] || "gollum"
     commit = { :message => params[:page][:message], :name => user.name, :email => user.mail }
 
     if page
@@ -37,6 +37,17 @@ class GollumController < ApplicationController
     end
 
     redirect_to :action => :show, :id => id
+  end
+
+  def preview
+    name, dir = split_id params[:id]
+    page = page_by_name_dir(@name, @dir)
+    preview = page ?
+      @wiki.preview_page(page.title, params[:page][:raw_data], page.format) :
+      @wiki.preview_page(name, params[:page][:raw_data], @project.gollum_wiki.markup_language.to_sym)
+
+    @text = preview.formatted_data.html_safe
+    render :inline => '<fieldset class="preview"><legend><%= l(:label_preview) %></legend><%= @text %></fieldset>'
   end
 
   private
@@ -82,6 +93,7 @@ class GollumController < ApplicationController
       @page_author = page.version.author.name
       @page_header = page.header ? page.header.formatted_data.html_safe : ""
       @page_footer = page.footer ? page.footer.formatted_data.html_safe : ""
+      @page_sidebar = page.sidebar ? page.sidebar.formatted_data.html_safe : ""
     elsif gollum_file = @wiki.file(id)
         send_data gollum_file.raw_data, :type => gollum_file.mime_type
     else

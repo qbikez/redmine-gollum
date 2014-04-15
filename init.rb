@@ -35,7 +35,7 @@ Redmine::Plugin.register :redmine_gollum do
   project_module :gollum do
     permission :view_gollum_pages,   :gollum => [:index, :show]
     permission :add_gollum_pages,    :gollum => [:new, :create]
-    permission :edit_gollum_pages,   :gollum => [:edit, :update]
+    permission :edit_gollum_pages,   :gollum => [:edit, :update, :preview]
     permission :delete_gollum_pages, :gollum => [:destroy]
 
     permission :manage_gollum_wiki, :gollum_wikis => [:index,:show, :create, :update]
