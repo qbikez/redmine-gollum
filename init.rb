@@ -19,7 +19,6 @@ Redmine::Plugin.register :redmine_gollum do
   description 'A gollum plugin for redmine'
 
   # use git to get version name
-  repo = Rugged::Repository.new("#{Rails.root}/plugins/redmine_gollum/.git")
   version 'HEAD'
 
   url 'https://github.com/gugod/redmine-gollum/'
