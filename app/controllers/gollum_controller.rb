@@ -26,13 +26,18 @@ class GollumController < ApplicationController
     name, dir = split_id id
     page = page_by_name_dir(name, dir)
     user = User.current
-
-    params[:page][:message] = params[:page][:message] || "gollum"
+    
     commit = { :message => params[:page][:message], :name => user.name, :email => user.mail }
 
     if page
+      if commit[:message].empty?
+        commit[:message] = sprintf("Updated %s (%s)", page.name, page.format)
+      end
       @wiki.update_page(page, page.name, page.format, params[:page][:raw_data], commit)
     else
+      if commit[:message].empty?
+        commit[:message] = sprintf("Created %s (%s)", name, @project.gollum_wiki.markup_language)
+      end
       @wiki.write_page(name, @project.gollum_wiki.markup_language.to_sym, params[:page][:raw_data], commit, dir)
     end
 
