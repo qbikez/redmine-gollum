@@ -1,2 +1,7 @@
-nl:
-  gollum_base_path: Pad naar opslag 
+en:
+  Gollum: 'Gollum'
+  gollum_wiki_updated: 'Gollum instellingen opgeslagen'
+  gollum_wiki_update_error: 'Gollum instellingen zijn niet opgeslagen'
+  field_git_path: 'Git repository pad'
+  field_markup_language: 'Markup taal'
+  field_page_files_directory: 'Wiki pagina map'

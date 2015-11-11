@@ -116,6 +116,7 @@ class GollumController < ApplicationController
   end
 
   def find_wiki
+    
     git_path = project_repository_path
 
     unless File.directory? git_path

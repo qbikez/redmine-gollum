@@ -1,5 +1,5 @@
 class CreateGollumWikis < ActiveRecord::Migration
-  def self.up
+  def change 
     create_table :gollum_wikis do |t|
       t.references :project
       t.string :git_path
